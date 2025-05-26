@@ -41,15 +41,35 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+    // On récupère l'email et le mot de passe
+    $credentials = $this->only('email', 'password');
+    
+    // On tente de récupérer l'utilisateur dont l'email correspond
+    $user = \App\Models\User::where('email', $credentials['email'])->first();
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
-        }
+    // Si l'utilisateur n'existe pas ou si le statut du compte n'est pas actif, on échoue
+    if (!$user || $user->AccountStatus !== 'actif') {
+        RateLimiter::hit($this->throttleKey());
 
-        RateLimiter::clear($this->throttleKey());
+        throw ValidationException::withMessages([
+            'email' => trans('auth.account_inactive'), // Ou un message personnalisé comme 'Compte inactif'
+        ]);
+    }
+
+    // Si l'utilisateur existe et le statut est actif, on tente l'authentification avec le mot de passe
+    if (!\Hash::check($credentials['password'], $user->password)) {
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.failed'),
+        ]);
+    }
+
+    // On authentifie l'utilisateur
+    Auth::login($user, $this->boolean('remember'));
+
+    // Réinitialisation de la limitation de taux
+    RateLimiter::clear($this->throttleKey());
     }
 
     /**

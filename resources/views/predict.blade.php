@@ -1,10 +1,27 @@
-<x-app-layout> <x-slot name="header"> <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"> {{ __('Prediction') }} </h2> </x-slot>
-<div class="py-12">
-    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-            <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Importer un fichier CSV pour la prédiction du risque de churn</h2>
+@extends('layouts.AdminDash')
 
-            @if (session('success'))
+@section('title','Ligues')
+
+@section('content')
+<div class="pagetitle">
+    <h1>Prediction de Churn</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('predict') }}">Prediction</a></li>
+        <li class="breadcrumb-item active">Churn</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section dashboard">
+      
+    <div class="row">
+        <div class="col-lg-12">
+  
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Importer un fichier CSV pour la prédiction du risque de churn</h5>
+              @if (session('success'))
                 <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
                     {{ session('success') }}
                 </div>
@@ -33,7 +50,10 @@
 
                 </div>
             </form>
+            </div>
+          </div>
+  
         </div>
-    </div>
-</div>
-</x-app-layout>
+
+  </section>
+@endsection

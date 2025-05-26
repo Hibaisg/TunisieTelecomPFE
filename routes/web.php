@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,6 +12,14 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard1', function () {
+    return view('dashboard1');
+})->middleware(['auth', 'verified'])->name('dashboard1');
+
+Route::get('/dashboard2', function () {
+    return view('dashboard2');
+})->middleware(['auth', 'verified'])->name('dashboard2');
 
 // Add the prediction routes here
 Route::get('/predict', function () {
@@ -26,4 +35,8 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::resource('users', UserController::class);
+
 
